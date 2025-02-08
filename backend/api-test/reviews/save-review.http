@@ -1,0 +1,11 @@
+POST http://localhost:8080/review/new-review
+content-type: application/json
+
+{
+    "id": 1,
+    "userId": 1,
+    "username": "JohnDoe",
+    "productId": 1,
+    "rating": 0,
+    "review": "Excellent product!"
+}

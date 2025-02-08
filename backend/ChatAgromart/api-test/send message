@@ -1,0 +1,1 @@
+websocat -t "ws://localhost:8081/ws?senderID=2&receiverID=1"

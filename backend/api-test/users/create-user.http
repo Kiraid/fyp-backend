@@ -1,0 +1,9 @@
+POST http://localhost:8080/signup
+Content-type: application/json
+
+{
+    "email":"itachi.uchiha3130.com",
+    "password":"code",
+    "username":"zoro",
+    "role": "admin"
+}

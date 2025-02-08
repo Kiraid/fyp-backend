@@ -1,0 +1,5 @@
+curl.exe -X POST http://localhost:8080/category/new-category `
+-F "name=random seeddss" `
+-F "description=SOme sunflower seedssdsdsd" `
+-F "image=@C:/Users/Administrator/Pictures/task.jpg"`
+-F "userId=1" 

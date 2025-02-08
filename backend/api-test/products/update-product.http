@@ -1,0 +1,8 @@
+PUT http://localhost:8080/products/update-product/1
+Content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcxNDQ4ODAsInJvbGUiOiJzZWxsZXIiLCJ1c2VySWQiOjIsInVzZXJuYW1lIjoiVGVzdGVyIn0.Zm2cFG1mMBP7VbSEEKl3ks8ZbMaGE1vq48v8N65mzAs
+
+{
+    "name":"machinery for farming"
+
+}

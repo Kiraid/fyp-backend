@@ -1,0 +1,8 @@
+POST http://localhost:8080/users/about
+Content-type: application/json
+
+{
+    "about": "I am a seller from gujrawalla ",
+    "product_type": "fertilizers",
+    "userId": 2
+}
