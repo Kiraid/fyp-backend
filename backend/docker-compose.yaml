@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8080:8080'
+    volumes:
+      - ./api.db:/app/api.db
 
   chat:
     build:
@@ -34,3 +36,4 @@ services:
     ports:
       - "9092:9092"
 #docker exec -it broker /opt/kafka/bin/kafka-topics.sh --create --topic update-emails --bootstrap-server localhost:9092
+

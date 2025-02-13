@@ -2,16 +2,15 @@ package kafka_module
 
 import (
 	"context"
-	"crypto/tls"
+
 	"encoding/json"
 	"fmt"
-	"log"
+
 	"net/smtp"
 	"time"
 
 	"fyp.com/m/common"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/jordan-wright/email"
 )
 
 func ConsumerwithShutdown(ctx context.Context) {
@@ -62,7 +61,7 @@ func ConsumerwithShutdown(ctx context.Context) {
 			fmt.Printf("Email: %v", emailData)
 			err = sendEmail(emailData)
 			if err != nil {
-				fmt.Println("Error Sending message:", err)
+				fmt.Println("\nError Sending message:", err)
 			} else {
 				fmt.Printf("\nEmail sent to %s succesfully! \n", emailData.Email)
 			}
@@ -72,51 +71,32 @@ func ConsumerwithShutdown(ctx context.Context) {
 }
 
 // Send email using SMTP
-func sendEmail(emailData common.EmailMessage) error {
-	// SMTP server configuration
-	smtpServer := "smtp.mailersend.net" // Use your SMTP server
+func sendEmail(cemailData common.EmailMessage) error {
+	// SMTP Server Configuration
+	smtpHost := "smtp.mailersend.net"
 	smtpPort := "587"
+
+	// Load credentials from environment variables for security
 	senderEmail := "MS_JBzwfA@trial-3zxk54ve2pxljy6v.mlsender.net"
 	senderPassword := "mssp.1TkYvoQ.0p7kx4xqkkvg9yjr.fK7JB7O"
 
-	e := email.NewEmail()
-	e.From = senderEmail
-	e.To = []string{emailData.Email}
-	e.Subject = emailData.Subject
-	e.Text = []byte(emailData.Body)
-
-	addr := fmt.Sprintf("%s:%s", smtpServer, smtpPort)
-
-	// Connect to the SMTP server (plaintext connection first)
-	client, err := smtp.Dial(addr)
-	if err != nil {
-		log.Println("SMTP Connection Error:", err)
-		return err
-	}
-	defer client.Close()
-
-	// Start TLS encryption
-	tlsConfig := &tls.Config{
-		ServerName: smtpServer,
+	if senderEmail == "" || senderPassword == "" {
+		return fmt.Errorf("SMTP credentials are missing")
 	}
 
-	if err = client.StartTLS(tlsConfig); err != nil {
-		log.Println("TLS Handshake Error:", err)
-		return err
-	}
+	// Construct email message
+	message := fmt.Sprintf(
+		"From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s",
+		senderEmail, cemailData.Email, cemailData.Subject, cemailData.Body,
+	)
 
-	// Authenticate
-	auth := smtp.PlainAuth("", senderEmail, senderPassword, smtpServer)
-	if err = client.Auth(auth); err != nil {
-		log.Println("Authentication Error:", err)
-		return err
-	}
+	// SMTP Authentication
+	auth := smtp.PlainAuth("", senderEmail, senderPassword, smtpHost)
 
 	// Send email
-	err = e.Send(addr, auth)
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, senderEmail, []string{cemailData.Email}, []byte(message))
 	if err != nil {
-		log.Println("SMTP Error:", err)
-		return err
+		return fmt.Errorf("failed to send email: %v", err)
 	}
 
 	fmt.Println("Email sent successfully!")
