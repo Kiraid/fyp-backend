@@ -46,12 +46,12 @@ func createProduct(context *gin.Context) {
 	}
 
 	product := models.Product{
-		Name:        name,
-		Description: description,
-		ImagePath:   filePath,
-		UserID:      userId,
+		Name:          name,
+		Description:   description,
+		ImagePath:     filePath,
+		UserID:        userId,
 		Category_name: categoryName,
-		Price: price,
+		Price:         float64(price),
 	}
 
 	err = product.Save()
@@ -69,21 +69,21 @@ func updateProduct(context *gin.Context) {
 	}
 	role := context.GetString("role")
 	if role != "admin" {
-	userId := context.GetInt64("userId")
-	product, err := models.GetProductByID(id)
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt fetch product"})
-	}
-	if product.UserID != userId {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to update product"})
-		return
-	}
+		userId := context.GetInt64("userId")
+		product, err := models.GetProductByID(id)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt fetch product"})
+		}
+		if product.UserID != userId {
+			context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to update product"})
+			return
+		}
 	}
 	var updatedproduct models.Product
 	updatedproduct.Name = context.PostForm("name")
 	updatedproduct.Description = context.PostForm("description")
 	updatedproduct.Category_name = context.PostForm("categoryName")
-	updatedproduct.Price, err = strconv.ParseInt(context.PostForm("price"), 10, 64)
+	updatedproduct.Price, err = strconv.ParseFloat(context.PostForm("price"), 10)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid price"})
 		return
@@ -124,12 +124,12 @@ func deleteProduct(context *gin.Context) {
 	}
 	role := context.GetString("role")
 	if role != "admin" {
-	userID := context.GetInt64("userId")
-	if product.UserID != userID {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to delete product"})
-		return
+		userID := context.GetInt64("userId")
+		if product.UserID != userID {
+			context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to delete product"})
+			return
+		}
 	}
-}
 	err = product.DeleteProduct()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt fetch product"})
@@ -153,7 +153,7 @@ func getProductsbyuserid(context *gin.Context) {
 	context.JSON(http.StatusOK, products)
 }
 
-func getProductbyID(context *gin.Context){
+func getProductbyID(context *gin.Context) {
 	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt convert parse product id for read"})

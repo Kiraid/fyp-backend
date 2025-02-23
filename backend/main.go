@@ -12,6 +12,7 @@ import (
 
 	"fyp.com/m/db"
 	"fyp.com/m/kafka_module"
+	"fyp.com/m/models"
 	"fyp.com/m/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ import (
 func main() {
 	db.InitDB()
 	db.CreateTable()
+	models.InitRedis()
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithCancel(context.Background())
 	wg.Add(1)

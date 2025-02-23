@@ -1,5 +1,5 @@
 curl -X POST http://localhost:8080/products/new-product \
--H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk0NDg2NzUsInJvbGUiOiJhZG1pbiIsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJ6b3JvIn0.r0HGLt3qXjOM0i_oXr9Njgsp91kNVQX0az5sIiz3DSE" \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDAzMzI5NDQsInJvbGUiOiJhZG1pbiIsInVzZXJJZCI6MiwidXNlcm5hbWUiOiJ6b3JvIn0.e_DTDLNatlL1zVMaNH6i_m5lRc5BriI7MgqxkGENSOw" \
 -F "name=Tractor seeds" \
 -F "description=sunflower chia seeds" \
 -F "userId=1" \

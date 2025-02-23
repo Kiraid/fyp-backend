@@ -2,31 +2,32 @@ package models
 
 import (
 	"log"
+
 	"fyp.com/m/db"
 )
 
-type Product struct{
-	ID int64 `json:"id"`
-	Name string `json:"name"`
-	Description string `json:"description"`
-	ImagePath string `json:"imagepath"`
-	UserID int64 `json:"userId"`
-	Category_name string `json:"categoryName"`
-	Price int64 `json:"price"`
+type Product struct {
+	ID            int64   `json:"id"`
+	Name          string  `json:"name"`
+	Description   string  `json:"description"`
+	ImagePath     string  `json:"imagepath"`
+	UserID        int64   `json:"userId"`
+	Category_name string  `json:"categoryName"`
+	Price         float64 `json:"price"`
 }
 
-func GetAllProducts() ([]Product, error){
+func GetAllProducts() ([]Product, error) {
 	query := "SELECT * FROM products"
 	rows, err := db.DB.Query(query)
-	if err != nil{
+	if err != nil {
 		log.Printf("Error querying database: %v\n", err)
 	}
 	defer rows.Close()
 	var products []Product
-	for rows.Next(){
+	for rows.Next() {
 		var product Product
 		err := rows.Scan(&product.ID, &product.Name, &product.Description, &product.ImagePath, &product.UserID, &product.Category_name, &product.Price)
-		if err != nil{
+		if err != nil {
 			log.Printf("Error scanning rows: %v\n", err)
 			return nil, err
 		}
@@ -34,7 +35,6 @@ func GetAllProducts() ([]Product, error){
 	}
 	return products, nil
 }
-
 
 func (u *Product) Save() error {
 	query := "INSERT INTO products(name, description, imagepath, user_id, category_name, price) VALUES(?,?,?,?,?,?)"
@@ -45,7 +45,7 @@ func (u *Product) Save() error {
 
 	defer stmt.Close()
 	result, err := stmt.Exec(u.Name, u.Description, u.ImagePath, u.UserID, u.Category_name, u.Price)
-	
+
 	if err != nil {
 		log.Printf("Error executing save product query: %v\n", err)
 	}
@@ -54,15 +54,23 @@ func (u *Product) Save() error {
 	return err
 }
 
-func GetProductByID(id int64) (*Product, error){
+func GetProductByID(id int64) (*Product, error) {
+	product, err := GetCachedProduct(int(id))
+	if err == nil && product != nil {
+		log.Printf("Loaded from redis")
+		return product, nil
+	}
+
 	query := "SELECT * FROM products WHERE id = ?"
 	row := db.DB.QueryRow(query, id)
-	var product Product
-	err := row.Scan(&product.ID, &product.Name, &product.Description, &product.ImagePath, &product.UserID, &product.Category_name, &product.Price)
+	product = &Product{}
+	err = row.Scan(&product.ID, &product.Name, &product.Description, &product.ImagePath, &product.UserID, &product.Category_name, &product.Price)
 	if err != nil {
 		return nil, err
 	}
-	return &product,   nil
+	CacheProduct(*product)
+	log.Printf("Added to redis")
+	return product, nil
 }
 
 func (product Product) UpdateProduct() error {
@@ -83,7 +91,7 @@ func (product Product) UpdateProduct() error {
 	}
 	if product.UserID != 0 {
 		query += "user_id = ?, "
-		params = append(params, product.UserID )
+		params = append(params, product.UserID)
 	}
 	if product.Category_name != "" {
 		query += "category_name = ?, "
@@ -93,7 +101,6 @@ func (product Product) UpdateProduct() error {
 		query += "price = ?, "
 		params = append(params, product.Price)
 	}
-
 
 	query = query[:len(query)-2]
 	query += " WHERE id = ?"
@@ -109,9 +116,9 @@ func (product Product) UpdateProduct() error {
 	return err
 }
 
-func (product Product) DeleteProduct() error{
+func (product Product) DeleteProduct() error {
 	query := "DELETE FROM products WHERE id = ?"
-	stmt,err := db.DB.Prepare(query)
+	stmt, err := db.DB.Prepare(query)
 
 	if err != nil {
 		return err
@@ -121,18 +128,18 @@ func (product Product) DeleteProduct() error{
 	return err
 }
 
-func GetProductsbyUserID(id int64) ([]Product, error){
+func GetProductsbyUserID(id int64) ([]Product, error) {
 	query := "SELECT * FROM products where user_id = ?"
 	rows, err := db.DB.Query(query, id)
-	if err != nil{
+	if err != nil {
 		log.Printf("Error querying database: %v\n", err)
 	}
 	defer rows.Close()
 	var products []Product
-	for rows.Next(){
+	for rows.Next() {
 		var product Product
 		err := rows.Scan(&product.ID, &product.Name, &product.Description, &product.ImagePath, &product.UserID, &product.Category_name, &product.Price)
-		if err != nil{
+		if err != nil {
 			log.Printf("Error scanning rows: %v\n", err)
 			return nil, err
 		}
@@ -141,26 +148,23 @@ func GetProductsbyUserID(id int64) ([]Product, error){
 	return products, nil
 }
 
-
-func GetProductsbySearch(search string) ([]Product, error){
+func GetProductsbySearch(search string) ([]Product, error) {
 	query := "SELECT * FROM products WHERE name LIKE ?"
-	searchTerm := "%" + search + "%" 
+	searchTerm := "%" + search + "%"
 	rows, err := db.DB.Query(query, searchTerm)
 	if err != nil {
 		log.Printf("Error querying database for searchbar: %v\n", err)
 	}
 	defer rows.Close()
 	var products []Product
-	for rows.Next(){
+	for rows.Next() {
 		var product Product
 		err := rows.Scan(&product.ID, &product.Name, &product.Description, &product.ImagePath, &product.UserID, &product.Category_name, &product.Price)
-		if err != nil{
+		if err != nil {
 			log.Printf("Error scanning rows for searchbar: %v\n", err)
 			return nil, err
 		}
 		products = append(products, product)
 	}
-	return products,nil
+	return products, nil
 }
-
-

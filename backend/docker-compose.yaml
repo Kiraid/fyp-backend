@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      no_cache: true
     ports:
       - '8080:8080'
     volumes:
@@ -11,6 +12,7 @@ services:
     depends_on:
       -  kafka
       -  mysql
+      -  redis
 
   chat:
     build:
@@ -52,6 +54,17 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=yourpassword  # Optional: Enable authentication
+    command: [ "redis-server", "--requirepass", "yourpassword" ]  # Optional authentication
+  
 
 volumes:
   mysql_data:
