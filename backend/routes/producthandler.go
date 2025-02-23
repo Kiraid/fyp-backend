@@ -83,7 +83,7 @@ func updateProduct(context *gin.Context) {
 	updatedproduct.Name = context.PostForm("name")
 	updatedproduct.Description = context.PostForm("description")
 	updatedproduct.Category_name = context.PostForm("categoryName")
-	updatedproduct.Price, err = strconv.ParseFloat(context.PostForm("price"), 10)
+	updatedproduct.Price, err = strconv.ParseFloat(context.PostForm("price"), 64)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid price"})
 		return
