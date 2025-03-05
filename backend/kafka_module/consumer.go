@@ -16,7 +16,8 @@ import (
 func ConsumerwithShutdown(ctx context.Context) {
 	//Creating the consumer
 	config := &kafka.ConfigMap{
-		"bootstrap.servers": "broker:9092",
+		// "bootstrap.servers": "broker:9092",
+		"bootstrap.servers": "kafka-broker:9092",
 		"group.id":          "my-second-app",
 		"auto.offset.reset": "earliest",
 	}

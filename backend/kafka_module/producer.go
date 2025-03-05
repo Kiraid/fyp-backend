@@ -10,7 +10,7 @@ import (
 
 func Producer(value common.EmailMessage) {
 	config := &kafka.ConfigMap{
-		"bootstrap.servers": "broker:9092",
+		"bootstrap.servers": "kafka-broker:9092",
 	}
 	producer, err := kafka.NewProducer(config)
 	if err != nil {
