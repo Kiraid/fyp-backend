@@ -68,3 +68,55 @@ func GetCachedProduct(id int) (*Product, error) {
 	RDB.Expire(ctx, key, time.Hour)
 	return &product, nil
 }
+
+
+
+
+
+
+
+
+
+
+
+//using msg pack instead of json because its faster 
+
+// func CacheProduct(prod Product) {
+// 	ctx := context.Background()
+
+// 	// Convert product struct to MessagePack
+// 	productMsgPack, err := msgpack.Marshal(prod)
+// 	if err != nil {
+// 		log.Println("Error marshaling product:", err)
+// 		return
+// 	}
+
+// 	key := Product_key(int(prod.ID))
+// 	err = RDB.Set(ctx, key, productMsgPack, 0).Err() // No expiration here, set it in GetCachedProduct
+// 	if err != nil {
+// 		log.Println("Error caching product:", err)
+// 	}
+// }
+
+// // GetCachedProduct retrieves the product from Redis and deserializes it using MessagePack
+// func GetCachedProduct(id int) (*Product, error) {
+// 	ctx := context.Background()
+// 	key := Product_key(id)
+
+// 	// Get MessagePack data from Redis
+// 	productMsgPack, err := RDB.Get(ctx, key).Bytes() // Use Bytes() instead of Result() for binary data
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// Convert MessagePack back to struct
+// 	var product Product
+// 	err = msgpack.Unmarshal(productMsgPack, &product)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	// Reset expiration time
+// 	RDB.Expire(ctx, key, time.Hour)
+// 	return &product, nil
+// }
