@@ -14,7 +14,7 @@ func InitDB() {
 	var err error
 
 	// MySQL connection string: "user:password@tcp(host:port)/database"
-	dsn := "root:password@tcp(mysql:3306)/ecommerce_db?parseTime=true"
+	dsn := "root:password@tcp(mysql-service:3306)/ecommerce_db?parseTime=true"
 	DB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal("Could not connect to database:", err)
