@@ -2,7 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql" // Import SQLite driver
 )
@@ -14,7 +16,14 @@ func InitDB() {
 	var err error
 
 	// MySQL connection string: "user:password@tcp(host:port)/database"
-	dsn := "root:password@tcp(mysql-service:3306)/ecommerce_db?parseTime=true"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		os.Getenv("MYSQL_USER"), // Add this if needed, default is "root"
+		os.Getenv("MYSQL_ROOT_PASSWORD"),
+		os.Getenv("MYSQL_HOST_NAME"),
+		os.Getenv("MYSQL_PORT"),
+		os.Getenv("MYSQL_DB"),
+	)
+
 	DB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal("Could not connect to database:", err)

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -17,12 +18,15 @@ func Product_key(id int) string {
 var RDB *redis.Client
 
 func InitRedis() {
+	redisHost := os.Getenv("REDIS_HOST_NAME")
+	redisPort := os.Getenv("REDIS_PORT")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+
 	RDB = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "yourpassword",
+		Addr:     redisHost + ":" + redisPort,
+		Password: redisPassword,
 		DB:       0,
 	})
-
 	ctx := context.Background()
 	_, err := RDB.Ping(ctx).Result()
 	if err != nil {
@@ -69,17 +73,7 @@ func GetCachedProduct(id int) (*Product, error) {
 	return &product, nil
 }
 
-
-
-
-
-
-
-
-
-
-
-//using msg pack instead of json because its faster 
+//using msg pack instead of json because its faster
 
 // func CacheProduct(prod Product) {
 // 	ctx := context.Background()

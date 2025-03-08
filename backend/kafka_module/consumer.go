@@ -2,6 +2,7 @@ package kafka_module
 
 import (
 	"context"
+	"os"
 
 	"encoding/json"
 	"fmt"
@@ -16,8 +17,7 @@ import (
 func ConsumerwithShutdown(ctx context.Context) {
 	//Creating the consumer
 	config := &kafka.ConfigMap{
-		// "bootstrap.servers": "broker:9092",
-		"bootstrap.servers": "kafka-broker:9092",
+		"bootstrap.servers": fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT")),
 		"group.id":          "my-second-app",
 		"auto.offset.reset": "earliest",
 	}

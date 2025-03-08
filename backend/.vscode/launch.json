@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run local",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}",
+            "env":{
+                "MYSQL_ROOT_PASSWORD":"password",
+                "MYSQL_HOST_NAME":"mysql",
+                "MYSQL_PORT":"3306",
+                "MYSQL_DB":"ecommerce_db",
+                "REDIS_PASSWORD":"yourpassword",
+                "REDIS_HOST_NAME":"redis",
+                "REDIS_PORT":"6379"
+
+          
+            }
+        },
+
+        {
+            "name": "Run dev",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}",
+            "env":{
+                "REDIS_PASSWORD":"gXBjF3vgYV",
+                "MYSQL_ROOT_PASSWORD":"4GO5GsjFyW",
+                "MYSQL_HOST_NAME":"mysql-server.mysql.svc.cluster.local",
+                "MYSQL_PORT":"3307",
+                "MYSQL_DB":"ecommerce_db",
+                "MYSQL_USER":"root"
+
+
+
+            }
+        }
+    ]
+}
