@@ -6,7 +6,7 @@ metadata:
     app: my-golang-backend
   namespace: fyp-backend  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: my-golang-backend
@@ -36,3 +36,19 @@ spec:
           envFrom:
             - configMapRef:
                name: app-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  selector:
+    app: my-golang-backend
+  ports:
+  - protocol: TCP
+    port: 8080  
+    targetPort: 8080
+  type: LoadBalancer  
+                
