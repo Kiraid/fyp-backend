@@ -5,15 +5,15 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 var (
-	clientID     = "YOUR_CLIENT_ID"
-	clientSecret = "YOUR_CLIENT_SECRET"
+	clientID     = "406024045252-6q8slt53kok07c8hjuc84v0v2lbfuknu.apps.googleusercontent.com"
+	clientSecret = os.Getenv("CLIENT_SECRET")
 	redirectURI  = "http://localhost:8080/auth/callback" // Ensure this matches the one in Google Console
 )
 
-// ExchangeAuthCode exchanges the auth code for an access token
 func ExchangeAuthCode(authCode string) (map[string]interface{}, error) {
 	tokenURL := "https://oauth2.googleapis.com/token"
 
