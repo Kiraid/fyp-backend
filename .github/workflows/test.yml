@@ -18,10 +18,10 @@ jobs:
             - name: Build Docker Image
               run: |
                 cd backend
-                docker build -t f3130/my-golang-backend:latest .
+                docker build -t f3130/my-golang-backend:v2.1 .
             - name: Push Docker Image
               run: |
-                docker push f3130/my-golang-backend:latest
+                docker push f3130/my-golang-backend:v2.1
     # deploy-chat:
     #     runs-on: fyp-backend
     #     steps:

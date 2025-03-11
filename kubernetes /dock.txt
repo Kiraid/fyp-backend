@@ -3,3 +3,11 @@ kubectl create secret docker-registry dockerhub-secret \
   --docker-username=f3130 \
   --docker-password=codeblocks \
   --docker-email=faizan.akhtar3130@gmail.com
+
+
+kubectl exec -n kafka kafka-controller-0 -- \
+  kafka-topics.sh --create topic update-emails\
+  --bootstrap-server kafka-controller-headless.kafka.svc.cluster.local:9092 \
+  --command-config /opt/bitnami/kafka/config/server.properties \ 
+  --replication-factor 3 \
+  --partitions 3 \

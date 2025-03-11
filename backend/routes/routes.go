@@ -16,8 +16,9 @@ func RegisterRoutes(server *gin.Engine) {
 	}
 
 	// Authentication routes
-	server.POST("/signup", signUp) 
-	server.POST("/login", login)   
+	server.POST("/signup", signUp)
+	server.POST("/login", login)
+	server.GET("/auth/callback", authCallbackHandler)
 	server.POST("/refresh-token", refreshToken)
 	server.POST("/logout", logout)
 
@@ -32,7 +33,6 @@ func RegisterRoutes(server *gin.Engine) {
 	authenticated.PUT("/update-product/:id", updateProduct)
 	authenticated.DELETE("/delete-product/:id", deleteProduct)
 	authenticated.GET("/get-Product/:id", getProductsbyuserid)
-	
 
 	categoryRoutes := server.Group("/category")
 	//categoryRoutes.Use(middleware.Authenticate)
