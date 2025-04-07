@@ -3,10 +3,9 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"os"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var DB *sql.DB
