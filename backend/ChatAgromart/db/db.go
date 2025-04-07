@@ -39,7 +39,7 @@ func InitDB() {
 func CreateTable() {
 
 	createMessageTable := `CREATE TABLE IF NOT EXISTS messages (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	senderid INTEGER NOT NULL,
 	recieverid INTEGER NOT NULL,
 	content TEXT NOT NULL,
