@@ -56,8 +56,8 @@ func CreateTable() {
 
 	// Create indexes for faster lookups
 	createIndexes := []string{
-		"CREATE INDEX IF NOT EXISTS idx_recieverid ON messages (recieverid);",
-		"CREATE INDEX IF NOT EXISTS idx_senderid ON messages (senderid);",
+		"CREATE INDEX idx_recieverid ON messages (recieverid);",
+		"CREATE INDEX idx_senderid ON messages (senderid);",
 	}
 
 	for _, query := range createIndexes {
