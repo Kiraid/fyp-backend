@@ -1,0 +1,91 @@
+PUT products
+{
+  "settings": {
+    "analysis": {
+      "tokenizer": {
+        "edge_ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 10,
+          "token_chars": ["letter", "digit"]
+        }
+      },
+      "analyzer": {
+        "standard_analyzer": {
+          "type": "standard"  
+        },
+        "edge_ngram_analyzer": {
+          "type": "custom",
+          "tokenizer": "edge_ngram_tokenizer", 
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "fields": {
+          "standard": { 
+            "type": "text",
+            "analyzer": "standard_analyzer" 
+          },
+          "edge_ngram": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer"  
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "id": {
+        "type": "long"
+      },
+      "imagePath": {
+        "type": "keyword"
+      },
+      "userId": {
+        "type": "long"
+      },
+      "categoryName": {
+        "type": "keyword"
+      },
+      "price": {
+        "type": "double"
+      }
+    }
+  }
+}
+
+
+
+
+
+Search Query 
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "name": {
+              "query": "your_search_term"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match_phrase": {
+            "name": {
+              "query": "your_search_term"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

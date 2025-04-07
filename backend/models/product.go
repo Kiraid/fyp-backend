@@ -1,7 +1,10 @@
 package models
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
+	"net/http"
 
 	"fyp.com/m/db"
 )
@@ -41,17 +44,44 @@ func (u *Product) Save() error {
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		log.Printf("Error preparing while saving product query: %v\n", err)
+		return err
 	}
-
 	defer stmt.Close()
-	result, err := stmt.Exec(u.Name, u.Description, u.ImagePath, u.UserID, u.Category_name, u.Price)
 
+	result, err := stmt.Exec(u.Name, u.Description, u.ImagePath, u.UserID, u.Category_name, u.Price)
 	if err != nil {
 		log.Printf("Error executing save product query: %v\n", err)
+		return err
 	}
+
 	id, err := result.LastInsertId()
+	if err != nil {
+		log.Printf("Error getting last insert ID: %v\n", err)
+		return err
+	}
 	u.ID = id
-	return err
+
+	// Run the HTTP request in a goroutine
+	go func(product Product) {
+		jsonData, err := json.Marshal(product)
+		if err != nil {
+			log.Printf("Error marshaling product data: %v\n", err)
+			return
+		}
+
+		resp, err := http.Post("http://localhost:8083/save-ES", "application/json", bytes.NewBuffer(jsonData))
+		if err != nil {
+			log.Printf("Error sending request to Elasticsearch service: %v\n", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			log.Printf("Elasticsearch service responded with status: %d\n", resp.StatusCode)
+		}
+	}(*u) // Passing a copy of the product struct to avoid potential data race
+
+	return nil
 }
 
 func GetProductByID(id int64) (*Product, error) {

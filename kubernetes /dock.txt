@@ -11,3 +11,77 @@ kubectl exec -n kafka kafka-controller-0 -- \
   --command-config /opt/bitnami/kafka/config/server.properties \ 
   --replication-factor 3 \
   --partitions 3 \
+
+
+https://accounts.google.com/o/oauth2/v2/auth?client_id=406024045252-6q8slt53kok07c8hjuc84v0v2lbfuknu.apps.googleusercontent.com&redirect_uri=http://localhost:8080/auth/callback&scope=openid%20profile%20email&response_type=code&access_type=offline
+this gets back a access_token which is to be sent to backend
+
+
+
+elastisearch 
+
+curl -X PUT -H "Authorization: ApiKey $ELASTIC_API_KEY" -H "Content-Type: application/json" -d '{"settings":{"analysis":{"tokenizer":{"edge_ngram_tokenizer":{"type":"edge_ngram","min_gram":2,"max_gram":10,"token_chars":["letter","digit"]}},"analyzer":{"standard_analyzer":{"type":"standard"},"edge_ngram_analyzer":{"type":"custom","tokenizer":"edge_ngram_tokenizer","filter":["lowercase"]}}}},"mappings":{"properties":{"title":{"type":"text","fields":{"standard":{"type":"text","analyzer":"standard_analyzer"},"edge_ngram":{"type":"text","analyzer":"edge_ngram_analyzer"}}},"description":{"type":"text","analyzer":"standard"},"id":{"type":"long"},"imagePath":{"type":"keyword"},"userId":{"type":"long"},"categoryName":{"type":"keyword"},"price":{"type":"double"}}}}' "http://localhost:9200/products"
+
+
+
+PUT products
+{
+  "settings": {
+    "analysis": {
+      "tokenizer": {
+        "edge_ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 10,
+          "token_chars": ["letter", "digit"]
+        }
+      },
+      "analyzer": {
+        "standard_analyzer": {
+          "type": "standard"  
+        },
+        "edge_ngram_analyzer": {
+          "type": "custom",
+          "tokenizer": "edge_ngram_tokenizer", 
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "fields": {
+          "standard": { 
+            "type": "text",
+            "analyzer": "standard_analyzer" 
+          },
+          "edge_ngram": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer"  
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "id": {
+        "type": "long"
+      },
+      "imagePath": {
+        "type": "keyword"
+      },
+      "userId": {
+        "type": "long"
+      },
+      "categoryName": {
+        "type": "keyword"
+      },
+      "price": {
+        "type": "double"
+      }
+    }
+  }
+}

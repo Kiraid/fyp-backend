@@ -1,4 +1,5 @@
 ChatAgromart/
+ElasticSearch/
 api-test/
 Dockerfile
 docker-compose.yaml
