@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-golang-backend
+  name: my-chat-backend
   labels:
-    app: my-golang-backend
+    app: my-chat-backend
   namespace: fyp-backend  
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-golang-backend
+      app: my-chat-backend
   template:
     metadata:
       labels:
-        app: my-golang-backend
+        app: my-chat-backend
     spec:
       imagePullSecrets:
         - name: dockerhub-secret
       containers:
-        - name: my-golang-backend
-          image: f3130/my-golang-backend:latest
+        - name: my-chat-backend
+          image: f3130/backend-chat:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           resources:
             requests:
               cpu: "256m"
@@ -30,25 +30,22 @@ spec:
             limits:
               cpu: "550m"
               memory: "550Mi"
-          env:
-            - name: ENV
-              value: "production"
           envFrom:
             - configMapRef:
-               name: app-config
+               name: app-config              
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
+  name: chat
 spec:
   selector:
-    app: my-golang-backend
+    app: my-chat-backend
   ports:
   - protocol: TCP
-    port: 8080  
-    targetPort: 8080
+    port: 8081  
+    targetPort: 8081
   type: LoadBalancer  
                 

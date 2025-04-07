@@ -1,38 +1,38 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: app
-  namespace: fyp-backend
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: app
-  template:
-    metadata:
-      labels:
-        app: app
-    spec:
-      containers:
-      - name: app
-        image: f3130/my-golang-backend
-        resources:
-          limits:
-            memory: "1028Mi"
-            cpu: "1028m"
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: app
-spec:
-  selector:
-    app: app
-  ports:
-  - protocol: TCP
-    port: 8080  
-    targetPort: 8080
-  type: LoadBalancer  
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: app
+#   namespace: fyp-backend
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: app
+#   template:
+#     metadata:
+#       labels:
+#         app: app
+#     spec:
+#       containers:
+#       - name: app
+#         image: f3130/my-golang-backend
+#         resources:
+#           limits:
+#             memory: "1028Mi"
+#             cpu: "1028m"
+#         ports:
+#         - containerPort: 8080
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: app
+# spec:
+#   selector:
+#     app: app
+#   ports:
+#   - protocol: TCP
+#     port: 8080  
+#     targetPort: 8080
+#   type: LoadBalancer  
                 
