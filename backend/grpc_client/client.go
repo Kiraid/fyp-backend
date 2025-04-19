@@ -21,7 +21,6 @@ func Client(product *pb.Product){
     }	
 	address := fmt.Sprintf("%s:%s", rpcHost, rpcPort)
 	log.Printf("→ dialing gRPC at %q", address)
-	
 	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
     if err != nil {
         log.Printf("Cannot connect to server: %v", err) 
