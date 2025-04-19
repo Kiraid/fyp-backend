@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package techschool.pcbook;
+option go_package = "pb/";
+
+message Product{
+    uint64 id = 1;
+    string name = 2;
+    string description = 3;
+    string image_path = 4;
+    uint64 user_id = 5;
+    string category_name = 6;
+    double price = 7;
+}
+
+message SendProductRequest {Product product = 1;}
+
+message SendProductResponse {string id = 1;}
+
+service ProductService {
+    rpc SendProduct(SendProductRequest) returns (SendProductResponse);
+}
+

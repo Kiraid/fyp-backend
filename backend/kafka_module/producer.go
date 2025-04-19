@@ -7,18 +7,19 @@ import (
 	"fyp.com/m/common"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
-
+//Producer for producing a message in the topic
 func Producer(value common.EmailMessage) {
 	config := &kafka.ConfigMap{
 		"bootstrap.servers": "kafka-broker:9092",
 	}
+	//Initialize the producer
 	producer, err := kafka.NewProducer(config)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create producer: %s", err))
 	}
 
 	defer producer.Close()
-	// Delivery report handler for produced messages
+	// Validity check for message delivarance 
 	go func() {
 		for e := range producer.Events() {
 			switch ev := e.(type) {
@@ -31,18 +32,19 @@ func Producer(value common.EmailMessage) {
 			}
 		}
 	}()
+	//Converts email data to bytes
 	jsonValue, err := json.Marshal(value)
 	if err != nil {
 		fmt.Printf("Error marshalling JSON: %s\n", err)
 		return
 	}
-	// Produce messages to topic (asynchronously)
+	//Meta data for the producer to write
 	topic := "update-emails"
 	message := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          jsonValue,
 	}
-
+	//Produce the message
 	err = producer.Produce(message, nil)
 
 	if err != nil {

@@ -14,6 +14,8 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+//Kafka Consumer For Emails, Runs in the main.go as a seperate go-routine from the server
+
 func ConsumerwithShutdown(ctx context.Context) {
 	//Creating the consumer
 	// config := &kafka.ConfigMap{
@@ -46,13 +48,14 @@ func ConsumerwithShutdown(ctx context.Context) {
 		return
 	}
 	fmt.Println("Consumer started. Listening for messages...")
-	//Start a channel in main thread that listens for an interupt signal and create a context for clean shutdown
+	//Runs in a go routine, listening to a channel for shutdown signal in a infinite loop; 
 	for {
 		select {
 		case <-ctx.Done():
 			fmt.Println("Shutdown signal received. Closing consumer...")
 			return
 		default:
+			//polls every 10 second for a new message
 			msg, err := consumer.ReadMessage(10 * time.Second)
 			if err != nil {
 				if kafkaErr, ok := err.(kafka.Error); ok && kafkaErr.Code() == kafka.ErrTimedOut {
@@ -61,7 +64,7 @@ func ConsumerwithShutdown(ctx context.Context) {
 				fmt.Println("Error reading message:", err)
 				continue
 			}
-
+			//reads the value from message and converts from byte and binds it to email Struct
 			var emailData common.EmailMessage
 			err = json.Unmarshal(msg.Value, &emailData)
 			if err != nil {
@@ -69,6 +72,7 @@ func ConsumerwithShutdown(ctx context.Context) {
 				continue
 			}
 			fmt.Printf("Email: %v", emailData)
+			//Calls the sendEmail function with email data
 			err = sendEmail(emailData)
 			if err != nil {
 				fmt.Println("\nError Sending message:", err)

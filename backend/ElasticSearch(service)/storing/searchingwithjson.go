@@ -127,27 +127,27 @@ func SearchingJson(query string) ([]map[string]interface{}, error) {
 	}
 
 	// Convert response to a map
-	var rawResult map[string]interface{}
+	var rawResult map[string]any
 	err = json.Unmarshal(body, &rawResult)
 	if err != nil {
 		log.Printf("Error unmarshaling response: %v\n", err)
 		return nil, err
 	}
 
-	hits, ok := rawResult["hits"].(map[string]interface{})
+	hits, ok := rawResult["hits"].(map[string]any)
 	if !ok {
-		return nil, fmt.Errorf("Invalid Hit structure")
+		return nil, fmt.Errorf("INVALID STRUCTURE %t", ok)
 	}
 
-	hitArray, ok := hits["hits"].([]interface{})
+	hitArray, ok := hits["hits"].([]any)
 	if !ok {
-		return nil, fmt.Errorf("invalid hits array structure")
+		return nil, fmt.Errorf("INVALID HITS ARRAY STRUCTURE %t", ok)
 	}
-	var formattedResults []map[string]interface{}
+	var formattedResults []map[string]any
 
 	for _, h := range hitArray {
-		hitMap, _ := h.(map[string]interface{})
-		formattedResult := map[string]interface{}{
+		hitMap, _ := h.(map[string]any)
+		formattedResult := map[string]any{
 			"_source":   hitMap["_source"],
 			"highlight": hitMap["highlight"],
 		}

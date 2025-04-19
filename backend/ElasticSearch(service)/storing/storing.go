@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/elastic/go-elasticsearch/v8"
 )
@@ -19,15 +20,22 @@ type Product struct {
 	Category_name string  `json:"categoryName"`
 	Price         float64 `json:"price"`
 }
+func NewProduct() *Product {
+	return &Product{}
+}
 
 var ES *elasticsearch.Client
 
 func InitES() {
+	esHost := os.Getenv("ES_HOST") // e.g., "localhost"
+	esPort := os.Getenv("ES_PORT") // e.g., "9200"
+
+	address := fmt.Sprintf("http://%s:%s/", esHost, esPort)
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200/",
+			address,
 		},
-		APIKey: "",
+		APIKey: "", 
 	}
 	var err error
 	ES, err = elasticsearch.NewClient(cfg)

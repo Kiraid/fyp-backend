@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-search-backend
+  labels:
+    app: my-search-backend
+  namespace: fyp-backend  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-search-backend
+  template:
+    metadata:
+      labels:
+        app: my-search-backend
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+        - name: my-search-backend
+          image: f3130/backend-search:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082  # Gin HTTP server port
+            - containerPort: 8085  # gRPC server port
+          resources:
+            requests:
+              cpu: "256m"
+              memory: "256Mi"
+            limits:
+              cpu: "550m"
+              memory: "550Mi"
+          envFrom:
+            - configMapRef:
+               name: app-config          
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-http
+spec:
+  selector:
+    app: my-search-backend
+  ports:
+    - protocol: TCP
+      port: 8082  # External port
+      targetPort: 8082  # Internal port for Gin HTTP server
+  type: LoadBalancer
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-grpc
+spec:
+  selector:
+    app: my-search-backend
+  ports:
+    - protocol: TCP
+      port: 8085  # External port for gRPC
+      targetPort: 8085  # Internal port for gRPC server
+  type: LoadBalancer  
+                

@@ -1,12 +1,11 @@
 package models
 
 import (
-	"bytes"
-	"encoding/json"
 	"log"
-	"net/http"
 
 	"fyp.com/m/db"
+	"fyp.com/m/grpc_client"
+	"fyp.com/m/grpc_client/pb"
 )
 
 type Product struct {
@@ -61,25 +60,22 @@ func (u *Product) Save() error {
 	}
 	u.ID = id
 
-	// Run the HTTP request in a goroutine
+	// Run the grpc request in a goroutine
 	go func(product Product) {
-		jsonData, err := json.Marshal(product)
-		if err != nil {
-			log.Printf("Error marshaling product data: %v\n", err)
-			return
+		// Convert your local Product struct to gRPC pb.Product
+		pbProduct := &pb.Product{
+			Id:           uint64(product.ID), // or int64 if proto updated
+			Name:         product.Name,
+			Description:  product.Description,
+		 	ImagePath:    product.ImagePath,
+			UserId:       uint64(product.UserID),
+			CategoryName: product.Category_name,
+			Price:        float64(product.Price), // or float if proto updated
 		}
-
-		resp, err := http.Post("http://localhost:8083/save-ES", "application/json", bytes.NewBuffer(jsonData))
-		if err != nil {
-			log.Printf("Error sending request to Elasticsearch service: %v\n", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode != http.StatusOK {
-			log.Printf("Elasticsearch service responded with status: %d\n", resp.StatusCode)
-		}
-	}(*u) // Passing a copy of the product struct to avoid potential data race
+	
+		// Call gRPC client
+		grpc_client.Client(pbProduct)
+	}(*u) // pass copy of prod
 
 	return nil
 }

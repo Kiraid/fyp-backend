@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql" // Import SQLite driver
+	_ "github.com/go-sql-driver/mysql" 
 )
 
 var DB *sql.DB

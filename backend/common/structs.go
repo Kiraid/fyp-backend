@@ -1,5 +1,6 @@
 package common
 
+//Common structs Imported in multiple packages for use
 type EmailMessage struct {
 	Email   string `json:"email"`
 	Subject string `json:"subject"`

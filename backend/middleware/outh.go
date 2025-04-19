@@ -7,13 +7,16 @@ import (
 	"net/url"
 	"os"
 )
+//Oauth for Signin with google
 
+//Meta-data for request to Google
 var (
 	clientID     = "406024045252-6q8slt53kok07c8hjuc84v0v2lbfuknu.apps.googleusercontent.com"
 	clientSecret = os.Getenv("CLIENT_SECRET")
 	redirectURI  = "http://localhost:8080/auth/callback" // Ensure this matches the one in Google Console
 )
 
+//Function for exchaning authorization code with access token
 func ExchangeAuthCode(authCode string) (map[string]interface{}, error) {
 	tokenURL := "https://oauth2.googleapis.com/token"
 
@@ -37,7 +40,7 @@ func ExchangeAuthCode(authCode string) (map[string]interface{}, error) {
 	return result, nil
 }
 
-// GetUserInfo fetches user details using the access token
+// Fetches user info using the access token and client Secret
 func GetUserInfo(accessToken string) (map[string]interface{}, error) {
 	userInfoURL := "https://www.googleapis.com/oauth2/v2/userinfo"
 

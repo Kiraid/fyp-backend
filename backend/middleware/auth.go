@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Middleware for fetching jwt token from the request and calls the utils.VerfiyToken to check for its validity
 func Authenticate(context *gin.Context) {
 	authheader := context.Request.Header.Get("Authorization")
 	if authheader == "" {
