@@ -45,7 +45,8 @@ spec:
   selector:
     app: my-search-backend
   ports:
-    - protocol: TCP
+    - name: gin
+      protocol: TCP
       port: 8082  # External port
       targetPort: 8082  # Internal port for Gin HTTP server
   type: LoadBalancer
@@ -60,7 +61,8 @@ spec:
   selector:
     app: my-search-backend
   ports:
-    - protocol: TCP
+    - name: grpc
+      protocol: TCP
       port: 8085  # External port for gRPC
       targetPort: 8085  # Internal port for gRPC server
   type: LoadBalancer  

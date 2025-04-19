@@ -15,13 +15,18 @@ import (
 func Client(product *pb.Product){
 	rpcHost := os.Getenv("RPC_HOST")
 	rpcPort := os.Getenv("RPC_PORT")
-	address := fmt.Sprintf("http://%s:%s/", rpcHost, rpcPort)
+	if rpcHost == "" || rpcPort == "" {
+        log.Printf("gRPC environment variables not set: RPC_HOST=%s, RPC_PORT=%s", rpcHost, rpcPort)
+        return
+    }
+	address := fmt.Sprintf("%s:%s/", rpcHost, rpcPort)
 	log.Printf("Dail Server %s", address)
 	
 	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatal("Cannot connect to server: ", err)
-	}
+    if err != nil {
+        log.Printf("Cannot connect to server: %v", err) 
+        return
+    }
 	defer conn.Close()
 	
 	ProductClient := pb.NewProductServiceClient(conn)

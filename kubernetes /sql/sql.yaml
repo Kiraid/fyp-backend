@@ -16,9 +16,12 @@ spec:
       - name: mysql
         image: mysql:8.0
         resources:
+          requests:
+            cpu: "256m"
+            memory: "256Mi"
           limits:
-            memory: "1028Mi"
-            cpu: "1028m"
+            cpu: "550m"
+            memory: "550Mi"
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

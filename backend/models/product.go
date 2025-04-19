@@ -38,47 +38,53 @@ func GetAllProducts() ([]Product, error) {
 	return products, nil
 }
 
-func (u *Product) Save() error {
-	query := "INSERT INTO products(name, description, imagepath, user_id, category_name, price) VALUES(?,?,?,?,?,?)"
-	stmt, err := db.DB.Prepare(query)
-	if err != nil {
-		log.Printf("Error preparing while saving product query: %v\n", err)
-		return err
-	}
-	defer stmt.Close()
-
-	result, err := stmt.Exec(u.Name, u.Description, u.ImagePath, u.UserID, u.Category_name, u.Price)
-	if err != nil {
-		log.Printf("Error executing save product query: %v\n", err)
-		return err
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		log.Printf("Error getting last insert ID: %v\n", err)
-		return err
-	}
-	u.ID = id
-
-	// Run the grpc request in a goroutine
-	go func(product Product) {
-		// Convert your local Product struct to gRPC pb.Product
-		pbProduct := &pb.Product{
-			Id:           uint64(product.ID), // or int64 if proto updated
-			Name:         product.Name,
-			Description:  product.Description,
-		 	ImagePath:    product.ImagePath,
-			UserId:       uint64(product.UserID),
-			CategoryName: product.Category_name,
-			Price:        float64(product.Price), // or float if proto updated
+	func (u *Product) Save() error {
+		query := "INSERT INTO products(name, description, imagepath, user_id, category_name, price) VALUES(?,?,?,?,?,?)"
+		stmt, err := db.DB.Prepare(query)
+		if err != nil {
+			log.Printf("Error preparing while saving product query: %v\n", err)
+			return err
 		}
-	
-		// Call gRPC client
-		grpc_client.Client(pbProduct)
-	}(*u) // pass copy of prod
+		defer stmt.Close()
 
-	return nil
-}
+		result, err := stmt.Exec(u.Name, u.Description, u.ImagePath, u.UserID, u.Category_name, u.Price)
+		if err != nil {
+			log.Printf("Error executing save product query: %v\n", err)
+			return err
+		}
+
+		id, err := result.LastInsertId()
+		if err != nil {
+			log.Printf("Error getting last insert ID: %v\n", err)
+			return err
+		}
+		u.ID = id
+
+		// Run the grpc request in a goroutine
+		go func(product Product) {
+			defer func() {
+				if r := recover(); r != nil {
+					log.Printf("Recovered from panic in gRPC goroutine: %v", r)
+				}
+			}()
+			// Convert your local Product struct to gRPC pb.Product
+			log.Printf("Sending product to gRPC: %+v\n", product)
+			pbProduct := &pb.Product{
+				Id:           uint64(product.ID), // or int64 if proto updated
+				Name:         product.Name,
+				Description:  product.Description,
+				ImagePath:    product.ImagePath,
+				UserId:       uint64(product.UserID),
+				CategoryName: product.Category_name,
+				Price:        float64(product.Price), // or float if proto updated
+			}
+		
+			// Call gRPC client
+			grpc_client.Client(pbProduct)
+		}(*u) // pass copy of prod
+
+		return nil
+	}
 
 func GetProductByID(id int64) (*Product, error) {
 	product, err := GetCachedProduct(int(id))
