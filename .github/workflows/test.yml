@@ -18,10 +18,10 @@ jobs:
             - name: Build Docker Image
               run: |
                 cd backend
-                docker build -t f3130/my-golang-backend:v2.1 .
+                docker build -t f3130/my-golang-backend:v2.2 .
             - name: Push Docker Image
               run: |
-                docker push f3130/my-golang-backend:v2.1
+                docker push f3130/my-golang-backend:v2.2
                 
     # deploy-chat:
     #     runs-on: fyp-backend
@@ -54,6 +54,7 @@ jobs:
           - name: Build Docker Image
             run: |
               cd "backend/ElasticSearch(service)"
+              ls
               docker build -t f3130/backend-search:latest .
           - name: Push Docker Image
             run: |
