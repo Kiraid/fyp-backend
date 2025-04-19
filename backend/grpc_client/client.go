@@ -18,9 +18,9 @@ func Client(product *pb.Product){
 	if rpcHost == "" || rpcPort == "" {
         log.Printf("gRPC environment variables not set: RPC_HOST=%s, RPC_PORT=%s", rpcHost, rpcPort)
         return
-    }
-	address := fmt.Sprintf("%s:%s/", rpcHost, rpcPort)
-	log.Printf("Dail Server %s", address)
+    }	
+	address := fmt.Sprintf("%s:%s", rpcHost, rpcPort)
+	log.Printf("→ dialing gRPC at %q", address)
 	
 	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
     if err != nil {
