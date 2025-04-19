@@ -19,8 +19,8 @@ spec:
         - name: dockerhub-secret
       containers:
         - name: my-golang-backend
-          image: f3130/my-golang-backend:latest
-          imagePullPolicy: Always
+          image: f3130/my-golang-backend:2.2
+          imagePullPolicy: Always 
           ports:
             - containerPort: 8080
           resources:

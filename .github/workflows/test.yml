@@ -58,6 +58,6 @@ jobs:
               docker build -t f3130/backend-search:latest .
           - name: Push Docker Image
             run: |
-              docker push f3130/backend-chat:latest
+              docker push f3130/backend-search:latest
                         
 
