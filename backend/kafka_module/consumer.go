@@ -91,8 +91,8 @@ func sendEmail(cemailData common.EmailMessage) error {
 	smtpPort := "587"
 
 	// Load credentials from environment variables for security
-	senderEmail := "MS_JBzwfA@trial-3zxk54ve2pxljy6v.mlsender.net"
-	senderPassword := "mssp.1TkYvoQ.0p7kx4xqkkvg9yjr.fK7JB7O"
+	senderEmail := os.Getenv("SENDER_EMAIL")
+	senderPassword := os.Getenv("SENDER_PASSWORD")
 
 	if senderEmail == "" || senderPassword == "" {
 		return fmt.Errorf("SMTP credentials are missing")
