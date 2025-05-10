@@ -17,7 +17,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
+//main function
 func main() {
 	db.InitDB()
 	db.CreateTable()
